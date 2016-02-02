@@ -11,6 +11,11 @@ var PostSchema = new mongoose.Schema({
 
 mongoose.model('Post', PostSchema);
 
+PostSchema.methods.upvote = function(cb) {
+	this.upvotes += 1;
+	this.save(cb);
+};
+
 }
 
 catch (err){

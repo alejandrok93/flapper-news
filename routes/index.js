@@ -35,7 +35,7 @@ router.post('/posts', function(req, res, next) {
 	});
 });
 
-
+/*Express param function to get post and be able to use :post */
 router.param('post', function(req, res, next, id) {
 	var query = Post.findById(id);
 
@@ -48,13 +48,67 @@ router.param('post', function(req, res, next, id) {
 	});
 });
 
+/*Express param function to get comment use :comment */
+router.param('comment', function(req, res, next, id) {
+	var query = Comment.findById(id);
+
+	query.exec(function (err, comment) {
+		if (err) { return next(err); }
+		if (!comment) { return next(new Error('cant find comment')); }
+
+		req.comment = comment;
+		return next();
+	})
+})
+
 /*GET method to get a single post */
 router.get('/posts/:post', function(req, res) {
 	res.json(req.post);
 })
 
+/*PUT method to update upvote for a post */
+router.put('/posts/:post/upvote', function(req, res, next) {
+	req.post.upvote(function(err, post) {
+		if(err) { return next(err); }
+
+		res.json(post);
+	});
+});
+
+/* PUT method to update upvote for a comment */
+router.put('/posts/:post/comments/:comment/upvote', function(req, res, next) {
+	req.comment.upvote(function(err, comment) {
+		if (err) { return next(err); }
+
+		res.json(comment);
+	});
+});
 
 
+/*POST method for adding a new comment to a post */
+router.post('/posts/:post/comments', function(req, res, next) {
+	//comment object from Comment schema object
+	var comment = new Comment(req.body);
+	comment.post = req.post;
 
+	//Save comment to db
+	comment.save(function(err, comment) {
+		if(err) { return next(err); }
 
+		req.post.comments.push(comment);
+		req.post.save(function(err, post) {
+			if (err) { return next(err); }
 
+			res.json(comment);
+		});
+	});
+});
+
+/*Populate method to retrieve comments along with post */
+router.get('/posts/:post', function (req, res, next) {
+	req.post.populate('comments', function(err, post) {
+		if (err) { return next(err); }
+
+		res.json(post);
+	});
+});
