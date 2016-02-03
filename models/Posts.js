@@ -9,14 +9,21 @@ var PostSchema = new mongoose.Schema({
 	comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}]
 });
 
-mongoose.model('Post', PostSchema);
+
 
 PostSchema.methods.upvote = function(cb) {
-	this.upvotes += 1;
-	this.save(cb);
+  this.upvotes += 1;
+  this.save(cb);
 };
 
+
+
+/* mongoose.model MUST go at the end, after all methods!!!! */
+mongoose.model('Post', PostSchema);
+
 }
+
+
 
 catch (err){
 

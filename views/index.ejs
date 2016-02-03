@@ -81,11 +81,13 @@
   {{post.title}}
 </span>
 </h3>
+
+
 </div>
 
-<div ng-repeat="comment in posts.comments | orderBy:'-upvotes'">
+<div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
     
-    
+
     <span style="font-size:20px; margin-left:10px;">
       {{comment.body}}
     </span>
