@@ -10,7 +10,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 
-
 //Require mongoose library
 var mongoose = require('mongoose');
 
